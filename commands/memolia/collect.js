@@ -35,16 +35,9 @@ module.exports= {
         await interaction.deferReply();
         
         const image = interaction.options.get("image")
-        console.log("interaction: ", interaction.user.id)
+        // console.log("interaction: ", interaction.user)
         
         try {
-            // const positionReplace = position.replace(/(\w+:)|(\w+ :)/g, function(matchedStr) {
-            //     return '"' + matchedStr.substring(0, matchedStr.length - 1) + '":';
-            // });
-            // const positionPost = JSON.parse(positionReplace) || {}
-            // const postRes = await axios.post('http://localhost:5000/v1/check', {
-            //     position: positionReplace
-            // })
             const imageCanvas = createCanvas(imageConfig.width, imageConfig.height)
             const img = await loadImage(image.attachment.attachment)
             const converd = converedImage(img)
@@ -73,18 +66,7 @@ module.exports= {
     
             ctx.drawImage(img, imageConfig.width / 2 - converd.width / 2 , imageConfig.height / 2 - converd.height / 2, converd.width, converd.height)
             
-            // const formData = new FormData()
-            // formData.append("image", imageCanvas.toBuffer("image/png"), "converdImage.png")
-            // formData.append("position", JSON.stringify(positionPost))
-            // formData.append('user', JSON.stringify({
-            //     userId: interaction.user.id,
-            //     userName: interaction.user.username,
-            // }))
-            // const postRes = await axios.post('http://localhost:5000/v1/create', formData, {
-            //     headers: {
-            //         'Content-Type': 'multipart/form-data'
-            //     },                
-            // })
+      
             const userDoc = await postClient.fetch(`*[_type == "user" && id == "${interaction.user.id}"]`)
             if(userDoc[0]) {
                 const post = await postClient.assets.upload('image', imageCanvas.toBuffer()).then(img=> {
@@ -100,7 +82,6 @@ module.exports= {
                         .commit()        
                 })
                 return void interaction.followUp({
-                    // content: `✅ Done !!. ${postRes.data.message}`,
                     content: `✅ Done !!. [https://we-three-world.cyclic.app/m?_id=${interaction.user.id}](https://we-three-world.cyclic.app/m?_id=${interaction.user.id})`,
                     files: [new AttachmentBuilder(imageCanvas.toBuffer())]
                 });
@@ -108,6 +89,7 @@ module.exports= {
                 const post = await postClient.assets.upload('image', imageCanvas.toBuffer()).then(img => postClient.create({
                     _type: "user",
                     id: `${interaction.user.id}`,
+                    userName: `${interaction.user.username}`,
                     images: [{ 
                         _type: 'image',
                         _key: uuidv4(),
@@ -119,7 +101,6 @@ module.exports= {
                 }))
 
                 return void interaction.followUp({
-                    // content: `✅ Done !!. ${postRes.data.message}`,
                     content: `✅ Done !!. [https://we-three-world.cyclic.app/m?_id=${interaction.user.id}](https://we-three-world.cyclic.app/m?_id=${interaction.user.id})`,
                     files: [new AttachmentBuilder(imageCanvas.toBuffer())]
                 });
