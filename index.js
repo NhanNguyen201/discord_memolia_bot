@@ -114,6 +114,6 @@ app.get('/', async (req,res) =>{
 })
 
 
-app.listen(8999, () => {
+app.listen(process.env.PORT || 8999, () => {
   console.log("running")
 })
