@@ -86,20 +86,24 @@ app.post('/interactions', verifyKeyMiddleware(process.env.DISCORD_PUBLIC_KEY), a
 
 
 app.get('/register_commands', async (req,res) =>{
-  const commands = new Collection();
-
-  const landiaCommandPath = path.join(__dirname, './commands/memolia')
-  readdirSync(landiaCommandPath).filter(file => file.endsWith('.js')).forEach(file => {
-      const filePath = path.join(landiaCommandPath, file);
-      const command = require(filePath);
-      commands.set(command.name, command)
-  });
+  let slash_commands = [
+    {
+      "name": "yo",
+      "description": "replies with Yo!",
+      "options": []
+    },
+    {
+      "name": "dm",
+      "description": "sends user a DM",
+      "options": []
+    }
+  ]
   try
   {
     // api docs - https://discord.com/developers/docs/interactions/application-commands#create-global-application-command
     let discord_response = await discord_api.put(
       `/applications/${process.env.DISCORD_APP_ID}/guilds/${process.env.DISCORD_SERVER_ID}/commands`,
-      commands
+      slash_commands
     )
     console.log(discord_response.data)
     return res.send('commands have been registered')
