@@ -2,8 +2,6 @@ const { createCanvas, loadImage } = require('canvas')
 const { v4: uuidv4 } = require('uuid')
 const { AttachmentBuilder } = require('discord.js')
 const { postClient } = require('../../sanityClient')
-// const axios = require('axios')
-// const FormData = require('form-data')
 
 const imageConfig = {
     width: 500,
@@ -90,6 +88,7 @@ module.exports= {
                     _type: "user",
                     id: `${interaction.user.id}`,
                     userName: `${interaction.user.username}`,
+                    path: `${interaction.user.username}`,
                     images: [{ 
                         _type: 'image',
                         _key: uuidv4(),
