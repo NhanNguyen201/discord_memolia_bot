@@ -4,9 +4,11 @@ const { Client, GatewayIntentBits } = require('discord.js');
 
 const { readdirSync } = require('fs');
 const path = require('node:path');
+
 const { Collection, REST, Routes } = require('discord.js');
 // const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
-
+const repathCommand = require('./commands/memolia/repath')
+const collectCommand = require('./commands/memolia/collect')
 
 // global.client = new Client({ 
 //     intents: [
@@ -87,16 +89,8 @@ app.post('/interactions', verifyKeyMiddleware(process.env.DISCORD_PUBLIC_KEY), a
 
 app.get('/register_commands', async (req,res) =>{
   let slash_commands = [
-    {
-      "name": "yo",
-      "description": "replies with Yo!",
-      "options": []
-    },
-    {
-      "name": "dm",
-      "description": "sends user a DM",
-      "options": []
-    }
+    collectCommand,
+    repathCommand
   ]
   try
   {
