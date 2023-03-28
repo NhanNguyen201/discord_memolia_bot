@@ -67,7 +67,7 @@ app.get('/register_commands', async (req,res) =>{
   let slash_commands = [
     collectCommand,
     repathCommand
-  ].map(cmd => ({name: cmd.name,type: cmd.type, description: cmd.description }))
+  ].map(cmd => ({name: cmd.name,options: cmd.options, description: cmd.description }))
   try
   {
     // api docs - https://discord.com/developers/docs/interactions/application-commands#create-global-application-command
