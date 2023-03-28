@@ -85,7 +85,7 @@ module.exports= {
                         new ButtonBuilder()
                         .setLabel('Link to the web')
                         .setStyle('Link')
-                        .setURL(`https://we-three-world.cyclic.app/m?_id=${userDoc.path}`)
+                        .setURL(`https://we-three-world.cyclic.app/m?_id=${userDoc[0].path}`)
                         
                     );
                 return void interaction.followUp({

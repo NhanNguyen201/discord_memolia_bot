@@ -14,7 +14,7 @@ module.exports= {
     async execute(interaction){
         await interaction.deferReply();
         
-        const pathname = interaction.options.get("path").value
+        const pathname = encodeURI(interaction.options.get("path").value)
         try {
             const userDoc = await postClient.fetch(`*[_type == "user" && id == "${interaction.user.id}"]`)
             if(userDoc[0]) {
