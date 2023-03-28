@@ -22,6 +22,7 @@ const collectCommand = require('./commands/memolia/collect')
 const axios = require('axios')
 const express = require('express');
 const { InteractionType, InteractionResponseType, verifyKeyMiddleware } = require('discord-interactions');
+const { description } = require('./commands/memolia/collect');
 
 const app = express();
 
@@ -52,35 +53,10 @@ app.post('/interactions', verifyKeyMiddleware(process.env.DISCORD_PUBLIC_KEY), a
   const interaction = req.body;
 
   if (interaction.type === InteractionType.APPLICATION_COMMAND) {
-    console.log(interaction.data.name)
-    if(interaction.data.name == 'yo'){
-      return res.send({
-        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-        data: {
-          content: `Yo ${interaction.member.user.username}!`,
-        },
-      });
-    }
-
-    if(interaction.data.name == 'dm'){
-      let c = (await discord_api.post(`/users/@me/channels`,{
-        recipient_id: interaction.member.user.id
-      })).data
-      try{
-        let res = await discord_api.post(`/channels/${c.id}/messages`,{
-          content:'Yo! I got your slash command. I am not able to respond to DMs just slash commands.',
-        })
-        console.log(res.data)
-      }catch(e){
-        console.log(e)
-      }
-
-      return res.send({
-        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-        data:{
-          content:'👍'
-        }
-      });
+    const cmds = [collectCommand, repathCommand]
+    const cmd = cmds.find(c => c.name == interaction.data.name)
+    if(cmd) {
+      await cmd.execute(interaction)
     }
   }
 
@@ -91,7 +67,7 @@ app.get('/register_commands', async (req,res) =>{
   let slash_commands = [
     collectCommand,
     repathCommand
-  ]
+  ].map(cmd => ({name: cmd.name,type: cmd.type, description: cmd.description }))
   try
   {
     // api docs - https://discord.com/developers/docs/interactions/application-commands#create-global-application-command
