@@ -1,4 +1,5 @@
 const { postClient } = require('../../sanityClient')
+const { ActionRowBuilder, ButtonBuilder } = require('discord.js');
 
 module.exports= {
     name: "repath",
@@ -24,8 +25,17 @@ module.exports= {
                     });
                 } else {
                     postClient.patch(userDoc[0]._id).set({path: pathname}).commit().then(() => {
+                        const row = new ActionRowBuilder()
+                            .addComponents(
+                                new ButtonBuilder()
+                                .setLabel(`https://we-three-world.cyclic.app/m?_id=${pathname}`)
+                                .setStyle('Link')
+                                .setURL(`https://we-three-world.cyclic.app/m?_id=${pathname}`)
+                                
+                            );
                         return void interaction.followUp({
-                            content: `✅ Done !!. [https://we-three-world.cyclic.app/m?_id=${pathname}](https://we-three-world.cyclic.app/m?_id=${pathname}) .You can also use the old link`
+                            content: `✅ Done !!. You can vist this link below`,
+                            components: [row] 
                         });
                     }) 
                 }

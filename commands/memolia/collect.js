@@ -2,6 +2,7 @@ const { createCanvas, loadImage } = require('canvas')
 const { v4: uuidv4 } = require('uuid')
 const { AttachmentBuilder } = require('discord.js')
 const { postClient } = require('../../sanityClient')
+const { ActionRowBuilder, ButtonBuilder } = require('discord.js');
 
 const imageConfig = {
     width: 500,
@@ -79,16 +80,25 @@ module.exports= {
                         }])
                         .commit()        
                 })
+                const row = new ActionRowBuilder()
+                    .addComponents(
+                        new ButtonBuilder()
+                        .setLabel('Link to the web')
+                        .setStyle('Link')
+                        .setURL(`https://we-three-world.cyclic.app/m?_id=${userDoc.path}`)
+                        
+                    );
                 return void interaction.followUp({
-                    content: `✅ Done !!. [https://we-three-world.cyclic.app/m?_id=${interaction.user.id}](https://we-three-world.cyclic.app/m?_id=${interaction.user.id})`,
-                    files: [new AttachmentBuilder(imageCanvas.toBuffer())]
+                    content: `✅ Done !! You can go to the link below: `,
+                    files: [new AttachmentBuilder(imageCanvas.toBuffer())],
+                    components: [row] 
                 });
             } else {
                 const post = await postClient.assets.upload('image', imageCanvas.toBuffer()).then(img => postClient.create({
                     _type: "user",
                     id: `${interaction.user.id}`,
                     userName: `${interaction.user.username}`,
-                    path: `${interaction.user.username}`,
+                    path: `${interaction.user.id}`,
                     images: [{ 
                         _type: 'image',
                         _key: uuidv4(),
@@ -98,10 +108,18 @@ module.exports= {
                         }
                     }]
                 }))
-
+                const row = new ActionRowBuilder()
+                    .addComponents(
+                        new ButtonBuilder()
+                        .setLabel('Link to the web')
+                        .setStyle('Link')
+                        .setURL(`https://we-three-world.cyclic.app/m?_id=${interaction.user.id}`)
+                        
+                    );
                 return void interaction.followUp({
-                    content: `✅ Done !!. [https://we-three-world.cyclic.app/m?_id=${interaction.user.id}](https://we-three-world.cyclic.app/m?_id=${interaction.user.id})`,
-                    files: [new AttachmentBuilder(imageCanvas.toBuffer())]
+                    content: `✅ Done !! You can go to the link below:`,
+                    files: [new AttachmentBuilder(imageCanvas.toBuffer())],
+                    components: [row] 
                 });
             }
 
